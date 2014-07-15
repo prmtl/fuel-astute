@@ -91,6 +91,10 @@ module MCollective
           "ready_port" => 31338,
         }
 
+        if request[:protocol]
+          config["protocol"] = request[:protocol]
+        end
+
         if request.data.key?('config')
           config.merge!(JSON.parse(request[:config]))
         end
@@ -148,6 +152,11 @@ module MCollective
         validate :interfaces, String
         config = { "action" => "generate", "uid" => get_uid,
                    "interfaces" => JSON.parse(request[:interfaces]) }
+
+        if request[:protocol]
+          config["protocol"] = request[:protocol]
+        end
+
         if request.data.key?('config')
           config.merge!(JSON.parse(request[:config]))
         end

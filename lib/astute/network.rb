@@ -15,7 +15,7 @@
 module Astute
   module Network
 
-    def self.check_network(ctx, nodes)
+    def self.check_network(ctx, nodes, protocol=nil)
       if nodes.empty?
         Astute.logger.info(
           "#{ctx.task_id}: Network checker: nodes list is empty. Nothing to check.")
@@ -36,10 +36,10 @@ module Astute
       # TODO Everything breakes if agent not found. We have to handle that
       net_probe = MClient.new(ctx, "net_probe", uids)
 
-      start_frame_listeners(ctx, net_probe, nodes)
+      start_frame_listeners(ctx, net_probe, nodes, protocol)
       ctx.reporter.report({'progress' => 30})
 
-      send_probing_frames(ctx, net_probe, nodes)
+      send_probing_frames(ctx, net_probe, nodes, protocol)
       ctx.reporter.report({'progress' => 60})
 
       net_probe.discover(:nodes => uids)
@@ -94,7 +94,7 @@ module Astute
     end
 
     private
-    def self.start_frame_listeners(ctx, net_probe, nodes)
+    def self.start_frame_listeners(ctx, net_probe, nodes, protocol=nil)
       nodes.each do |node|
         data_to_send = make_interfaces_to_send(node['networks'])
 
@@ -102,11 +102,11 @@ module Astute
           "#{ctx.task_id}: Network checker listen: node: #{node['uid']} data: #{data_to_send.inspect}")
 
         net_probe.discover(:nodes => [node['uid'].to_s])
-        net_probe.start_frame_listeners(:interfaces => data_to_send.to_json)
+        net_probe.start_frame_listeners(:interfaces => data_to_send.to_json, :protocol => protocol)
       end
     end
 
-    def self.send_probing_frames(ctx, net_probe, nodes)
+    def self.send_probing_frames(ctx, net_probe, nodes, protocol=nil)
       nodes.each do |node|
         data_to_send = make_interfaces_to_send(node['networks'])
 
@@ -114,7 +114,7 @@ module Astute
           "#{ctx.task_id}: Network checker send: node: #{node['uid']} data: #{data_to_send.inspect}")
 
         net_probe.discover(:nodes => [node['uid'].to_s])
-        net_probe.send_probing_frames(:interfaces => data_to_send.to_json)
+        net_probe.send_probing_frames(:interfaces => data_to_send.to_json, :protocol=> protocol)
       end
     end
 

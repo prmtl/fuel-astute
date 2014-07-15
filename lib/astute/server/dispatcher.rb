@@ -73,7 +73,7 @@ module Astute
           end
         end
         reporter = Astute::Server::Reporter.new(@producer, data['respond_to'], data['args']['task_uuid'])
-        result = @orchestrator.verify_networks(reporter, data['args']['task_uuid'], data['args']['nodes'])
+        result = @orchestrator.verify_networks(reporter, data['args']['task_uuid'], data['args']['nodes'], data['protocol'])
         report_result(result, reporter)
       end
 

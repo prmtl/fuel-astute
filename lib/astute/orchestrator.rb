@@ -217,8 +217,8 @@ module Astute
       Dump.dump_environment(Context.new(task_id, reporter), settings)
     end
 
-    def verify_networks(reporter, task_id, nodes)
-      Network.check_network(Context.new(task_id, reporter), nodes)
+    def verify_networks(reporter, task_id, nodes, protocol=nil)
+      Network.check_network(Context.new(task_id, reporter), nodes, protocol)
     end
 
     def check_dhcp(reporter, task_id, nodes)
